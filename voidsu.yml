@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: voidsu
+  name: voidsu
+spec:
+  containers:
+  - env:
+    - name: ELASTIC_APM_ENABLED
+      value: false
+    - name: ELASTIC_APM_SERVICE_NAME
+      value: voidsu
+    - name: ELASTIC_APM_SERVER_URLS
+      value: http://localhost:8200
+    - name: ELASTIC_APM_SECRET_TOKEN
+      value: 12345678
+    - name: ELASTIC_APM_APPLICATION_PACKAGES
+      value: su.void_.api
+    - name: ELASTIC_APM_TRACE_METHODS
+      value: su.void_.api.*#*
+    - name: ELASTIC_APM_SERVICE_VERSION
+      value: 0.3.0
+    - name: ELASTIC_APM_CAPTURE_BODY
+      value: all
+    - name: JAVA_OPTS
+      value: "-XshowSettings"
+    image: registry.hub.docker.com/voidsu/voidsu:0.3.0
+    name: voidsu
+    ports:
+    - containerPort: 8080
+      hostIP: 127.0.0.1
+      hostPort: 8080
+      protocol: TCP
+    securityContext:
+      allowPrivilegeEscalation: true
+      capabilities: {}
+      privileged: false
+      readOnlyRootFilesystem: false
+      runAsGroup: 0
+      runAsUser: 185
+      seLinuxOptions: {}
+    workingDir: /home/jboss
+    volumeMounts:
+    - mountPath: /tmp
+      name: voidsu-tmp-volume
+  volumes:
+  - hostPath:
+      path: /tmp/voidsu
+      type: Directory
+    name: voidsu-tmp-volume
